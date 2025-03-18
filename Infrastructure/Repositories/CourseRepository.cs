@@ -10,18 +10,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class CourseRepository : ICourseRepository
+    public class CourseRepository : BaseRepository,ICourseRepository
     {
-        private readonly DatabaseContext _context;
 
-        public CourseRepository(DatabaseContext context)
+        public CourseRepository(DatabaseContext context): base(context)
         {
-            _context = context;
         }
 
         public async Task<Course> GetByIdAsync(Guid id)
         {
-            var foundedCourse = await _context.Courses.FindAsync(id);
+            var foundedCourse = await Context.Courses.FindAsync(id);
 
             if (foundedCourse == null)
             {
@@ -32,18 +30,18 @@ namespace Infrastructure.Repositories
 
         public async Task<Course?> GetByNameAsync(string name)
         {
-            return await _context.Courses.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
+            return await Context.Courses.Include(x=>x.StudentCourses).ThenInclude(x=>x.Student).FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
         public Task<Course?> GetByCodeAsync(string code)
         {
-            return _context.Courses.FirstOrDefaultAsync(c => c.Code.ToLower() == code.ToLower());
+            return Context.Courses.Include(x => x.StudentCourses).ThenInclude(x => x.Student).FirstOrDefaultAsync(c => c.Code.ToLower() == code.ToLower());
         }
 
         public async Task<IEnumerable<Course>> GetAllAsync(int page = 1, int count = 10)
         {
             return
-                await _context.Courses
+                await Context.Courses
                 .Skip((page - 1) * count)
                 .Take(count)
                 .ToListAsync();
@@ -51,11 +49,11 @@ namespace Infrastructure.Repositories
 
         public async Task<Course> AddAsync(Course course)
         {
-            var newCourse = await _context.Courses.AddAsync(course);
+            var newCourse = await Context.Courses.AddAsync(course);
 
             if (newCourse.State == EntityState.Added)
             {
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
                 return newCourse.Entity;
             }
             return null;
@@ -63,7 +61,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Course?> UpdateAsync(Course course)
         {
-            var foundedCourse = await _context.Courses.FindAsync(course.Id);
+            var foundedCourse = await Context.Courses.FindAsync(course.Id);
 
             if (foundedCourse == null)
             {
@@ -73,7 +71,7 @@ namespace Infrastructure.Repositories
             foundedCourse.Name = course.Name;
             foundedCourse.Code = course.Code;
 
-            var affectedRow = await _context.SaveChangesAsync();
+            var affectedRow = await Context.SaveChangesAsync();
 
             return affectedRow > 0 ? foundedCourse : null;
 
@@ -81,14 +79,19 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await Context.Courses.FindAsync(id);
             if (course != null)
             {
-                _context.Courses.Remove(course);
-                await _context.SaveChangesAsync();
+                Context.Courses.Remove(course);
+                await Context.SaveChangesAsync();
                 return true;
             }
             return false;
+        }
+
+        public async Task<ICollection<Course>> GetByIdsAsync(List<Guid> requestCourseIds)
+        {
+            return await Context.Courses.Where(c => requestCourseIds.Contains(c.Id)).ToListAsync();
         }
     }
 }

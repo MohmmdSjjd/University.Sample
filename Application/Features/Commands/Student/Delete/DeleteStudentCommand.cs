@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Features.Commands.Student.Delete
 {
-    public class DeleteStudentCommand : IRequest<bool>
+    public record DeleteStudentCommand : IRequest<bool>
     {
         public Guid Id { get; set; }
     }

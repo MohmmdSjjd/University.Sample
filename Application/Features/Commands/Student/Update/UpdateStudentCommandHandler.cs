@@ -17,7 +17,7 @@ public class UpdateStudentCommandHandler : StudentBase, IRequestHandler<UpdateSt
     {
         var existingStudentByName = await StudentRepository.GetByNationalCodeAsync(request.NationalCode);
 
-        if (existingStudentByName.Id == request.Id)
+        if (existingStudentByName == null || existingStudentByName.Id == request.Id)
         {
             var student = await StudentRepository.UpdateAsync(Mapper.Map<Domain.Entities.Student>(request));
 

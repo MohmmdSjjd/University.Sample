@@ -15,6 +15,7 @@ namespace Domain.Contracts.Repositories
         Task<IEnumerable<Course>> GetAllAsync(int page = 1, int count=10);  
         Task<Course> AddAsync(Course course);   
         Task<Course?> UpdateAsync(Course course);
-        Task<bool> DeleteAsync(Guid id);  
+        Task<bool> DeleteAsync(Guid id);
+        Task<ICollection<Course>> GetByIdsAsync(List<Guid> requestCourseIds);
     }
 }

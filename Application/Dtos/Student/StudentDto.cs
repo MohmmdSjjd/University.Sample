@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Dtos.Course;
 
 namespace Application.Dtos.Student
 {
@@ -14,5 +15,6 @@ namespace Application.Dtos.Student
         public string NationalCode { get; set; }
         public Guid StudentCode { get; set; }
         public DateTime BirthDate { get; set; }
+        public List<CourseDto> Courses { get; set; }= new();
     }
 }

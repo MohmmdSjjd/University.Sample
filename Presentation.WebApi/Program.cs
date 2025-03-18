@@ -44,6 +44,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 #region IOC
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IStudentCourseRepository,StudentCourseRepository>();
 #endregion
 
 #region Mapper
