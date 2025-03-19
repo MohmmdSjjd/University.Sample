@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
 using MediatR;
+using System.Net;
 
 namespace Application.Features.Queries.Course.GetByName;
 
@@ -18,7 +19,7 @@ public class GetCourseByNameQueryHandler : CourseBase, IRequestHandler<GetCourse
 
         if (foundedCourse == null)
         {
-            throw new ApiException("Course not found",404);
+            throw new ApiException("Course not found", (int)HttpStatusCode.NotFound);
         }
 
         return Mapper.Map<CourseDto>(foundedCourse);

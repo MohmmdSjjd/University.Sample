@@ -5,6 +5,7 @@ using Application.Features.Queries.Student.GetByNationalCode;
 using Application.Features.Queries.Student.GetByStudentCode;
 using Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace Presentation.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class StudentController : ControllerBase
     {
 

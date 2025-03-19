@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dtos
+namespace Application.Dtos.Enrollment
 {
-    public class EnrollmentsDto
+    public class EnrollmentDto
     {
         public Guid StudentId { get; set; }
         public Guid CourseId { get; set; }

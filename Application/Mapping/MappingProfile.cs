@@ -1,8 +1,8 @@
-﻿using Application.Dtos;
-using Application.Dtos.Course;
+﻿using Application.Dtos.Course;
+using Application.Dtos.Enrollment;
 using Application.Dtos.Student;
+using Application.Features.Commands.Auth.Register;
 using Application.Features.Commands.Course.Create;
-using Application.Features.Commands.Course.Delete;
 using Application.Features.Commands.Course.Update;
 using Application.Features.Commands.Student.Create;
 using Application.Features.Commands.Student.Update;
@@ -11,25 +11,25 @@ using Domain.Entities;
 
 namespace Application.Mapping
 {
-    public class MappingProfile:Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
 
             #region Dto
 
-            
+
 
 
             CreateMap<Student, StudentDto>()
-                .ForMember( dest=>dest.Courses,opt=>opt.MapFrom(x=>x.StudentCourses)).ReverseMap();
+                .ForMember(dest => dest.Courses, opt => opt.MapFrom(x => x.StudentCourses)).ReverseMap();
 
 
             CreateMap<Course, CourseDto>()
                 .ForMember(dest => dest.Students, opt => opt.MapFrom(x => x.StudentCourses)).ReverseMap();
 
 
-            CreateMap<StudentCourse ,EnrollmentsDto>()
+            CreateMap<StudentCourse, EnrollmentDto>()
                 .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId))
                 .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.CourseId))
                 .ReverseMap();

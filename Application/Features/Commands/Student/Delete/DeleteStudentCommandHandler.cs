@@ -2,6 +2,7 @@
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
 using MediatR;
+using System.Net;
 
 namespace Application.Features.Commands.Student.Delete;
 
@@ -16,7 +17,7 @@ public class DeleteStudentCommandHandler :StudentBase, IRequestHandler<DeleteStu
         var deletedStudent = await StudentRepository.DeleteAsync(request.Id);
 
         if(!deletedStudent)
-            throw new ApiException("Student not found", 404);
+            throw new ApiException("Student not found", (int)HttpStatusCode.NotFound);
 
         return deletedStudent;
     }

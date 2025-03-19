@@ -1,27 +1,43 @@
+#region Using
+
 using System.Reflection;
 using System.Text;
 using Application.Common;
+using Application.Features.Commands.Auth.Login;
 using Application.Features.Commands.Course.Create;
+using Application.Features.Commands.Course.Update;
 using Application.Mapping;
+using Domain.Contracts.Identity;
 using Domain.Contracts.Repositories;
+using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Presentation.WebApi.Extensions;
 using Presentation.WebApi.Middlewares;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+
+#region Swagger
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+#endregion
 
 #region Routing
 
@@ -35,8 +51,25 @@ builder.Services.AddRouting(options =>
 #region DataBase
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+
+#endregion
+
+#region Identity
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<DatabaseContext>()
+    .AddDefaultTokenProviders();
+
+
+builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"));
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
 });
 
 #endregion
@@ -44,7 +77,10 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 #region IOC
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-builder.Services.AddScoped<IStudentCourseRepository,StudentCourseRepository>();
+builder.Services.AddScoped<IStudentCourseRepository, StudentCourseRepository>();
+
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<TokenService>();
 #endregion
 
 #region Mapper
@@ -131,12 +167,15 @@ builder.Services.AddMediatR(configuration =>
 #endregion
 
 #region FluentValidation
-builder.Services.AddValidatorsFromAssemblies(new[] { typeof(CreateCourseCommandValidator).Assembly });
+
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddValidatorsFromAssemblies(new List<Assembly>(){Assembly.GetAssembly(typeof(UpdateCourseCommand))!});
 
 #endregion
 
 var app = builder.Build();
+
+app.MigrateDatabase<DatabaseContext>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

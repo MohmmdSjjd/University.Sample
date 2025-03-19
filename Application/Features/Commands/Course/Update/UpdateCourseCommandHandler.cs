@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Course;
+﻿using System.Net;
+using Application.Dtos.Course;
 using AutoMapper;
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
@@ -19,7 +20,7 @@ public class UpdateCourseCommandHandler : CourseBase, IRequestHandler<UpdateCour
         var updatedCourse = await CourseRepository.UpdateAsync(Mapper.Map<Domain.Entities.Course>(request));
           
         if (updatedCourse == null) {
-            throw new ApiException("Course not found.", 404);
+            throw new ApiException("Course not found.", (int)HttpStatusCode.NotFound);
         }
 
         return Mapper.Map<CourseDto>(updatedCourse);

@@ -22,7 +22,7 @@ public class UpdateStudentCommandHandler : StudentBase, IRequestHandler<UpdateSt
             var student = await StudentRepository.UpdateAsync(Mapper.Map<Domain.Entities.Student>(request));
 
             if (student == null)
-                throw new ApiException("Nothing Changed", 404);
+                throw new ApiException("Nothing Changed", (int)HttpStatusCode.NotFound);
 
             return Mapper.Map<StudentDto>(student);
         }

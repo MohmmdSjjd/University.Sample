@@ -4,6 +4,7 @@ using Application.Features.Commands.Course.Update;
 using Application.Features.Queries.Course.GetByCode;
 using Application.Features.Queries.Course.GetByName;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace Presentation.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CourseController : ControllerBase
     {
         private readonly IMediator _mediator;
