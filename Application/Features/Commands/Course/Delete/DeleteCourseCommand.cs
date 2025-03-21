@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using Application.Dtos.Course.Commands;
+using MediatR;
 
 namespace Application.Features.Commands.Course.Delete
 {
-    public record DeleteCourseCommand : IRequest<bool>
+    public record DeleteCourseCommand : IRequest<DeleteCourseCommandResponseDto>
     {
         public Guid Id { get; init; }
     }

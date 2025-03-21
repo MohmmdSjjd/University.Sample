@@ -17,7 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Auth\" />
+    <Folder Include="Dtos\Auth\Queries\" />
+    <Folder Include="Dtos\Course\Queries\" />
+    <Folder Include="Dtos\Enrollment\Commands\" />
+    <Folder Include="Dtos\Enrollment\Queries\" />
+    <Folder Include="Dtos\Student\Queries\" />
   </ItemGroup>
 
 </Project>

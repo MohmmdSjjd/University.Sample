@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.Student;
+using Application.Dtos.Student.Commands;
 using AutoMapper;
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
@@ -7,13 +8,13 @@ using System.Net;
 
 namespace Application.Features.Commands.Student.Update;
 
-public class UpdateStudentCommandHandler : StudentBase, IRequestHandler<UpdateStudentCommand, StudentDto>
+public class UpdateStudentCommandHandler : StudentBase, IRequestHandler<UpdateStudentCommand, UpdateStudentCommandResponseDto>
 {
     public UpdateStudentCommandHandler(IStudentRepository studentRepository, IMapper mapper) : base(studentRepository, mapper)
     {
     }
 
-    public async Task<StudentDto> Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateStudentCommandResponseDto> Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
     {
         var existingStudentByName = await StudentRepository.GetByNationalCodeAsync(request.NationalCode);
 
@@ -24,7 +25,7 @@ public class UpdateStudentCommandHandler : StudentBase, IRequestHandler<UpdateSt
             if (student == null)
                 throw new ApiException("Nothing Changed", (int)HttpStatusCode.NotFound);
 
-            return Mapper.Map<StudentDto>(student);
+            return Mapper.Map<UpdateStudentCommandResponseDto>(student);
         }
         throw new ApiException("Student already exists", (int)HttpStatusCode.BadRequest);
     }

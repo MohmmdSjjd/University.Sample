@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Application.Dtos.Course.Commands;
 using AutoMapper;
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
@@ -6,12 +7,12 @@ using MediatR;
 
 namespace Application.Features.Commands.Course.Delete;
 
-public class DeleteCourseCommandHandler :CourseBase, IRequestHandler<DeleteCourseCommand, bool>
+public class DeleteCourseCommandHandler :CourseBase, IRequestHandler<DeleteCourseCommand, DeleteCourseCommandResponseDto>
 {
     public DeleteCourseCommandHandler(ICourseRepository courseRepository,IMapper mapper):base(courseRepository, mapper)
     {
     }
-    public async Task<bool> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
+    public async Task<DeleteCourseCommandResponseDto> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
 
 
@@ -22,6 +23,6 @@ public class DeleteCourseCommandHandler :CourseBase, IRequestHandler<DeleteCours
             throw new ApiException(" Course not found", (int)HttpStatusCode.NotFound);
         }
 
-        return deletedCourse;
+        return Mapper.Map<DeleteCourseCommandResponseDto>(deletedCourse);
     }
 }

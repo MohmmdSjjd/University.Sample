@@ -7,13 +7,13 @@ using System.Net;
 
 namespace Application.Features.Queries.Course.GetByCode;
 
-public class GetCourseByCodeQueryHandler : CourseBase, IRequestHandler<GetCourseByCodeQuery, CourseDto>
+public class GetCourseByCodeQueryHandler : CourseBase, IRequestHandler<GetCourseByCodeQuery, CourseResponseDto>
 {
     public GetCourseByCodeQueryHandler(ICourseRepository courseRepository, IMapper mapper) : base(courseRepository, mapper)
     {
     }
 
-    public async Task<CourseDto> Handle(GetCourseByCodeQuery request, CancellationToken cancellationToken)
+    public async Task<CourseResponseDto> Handle(GetCourseByCodeQuery request, CancellationToken cancellationToken)
     {
         var foundedCourse =await CourseRepository.GetByCodeAsync(request.Code);
 
@@ -22,7 +22,7 @@ public class GetCourseByCodeQueryHandler : CourseBase, IRequestHandler<GetCourse
             throw new ApiException("Course not found", (int)HttpStatusCode.NotFound);
         }
 
-        return Mapper.Map<CourseDto>(foundedCourse);
+        return Mapper.Map<CourseResponseDto>(foundedCourse);
 
     }
 

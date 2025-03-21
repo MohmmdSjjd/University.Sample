@@ -7,7 +7,7 @@ using Application.Dtos.Student;
 
 namespace Application.Dtos.Course
 {
-    public class CourseDto
+    public class CourseResponseDto
     {
         public Guid Id { get; set; }    
         public string Name { get; set; }

@@ -1,25 +1,22 @@
 ﻿using System.Net;
+using Application.Dtos.Auth.Commands;
+using AutoMapper;
 using Domain.Contracts.Identity;
 using Domain.Exceptions;
 using MediatR;
 
 namespace Application.Features.Commands.Auth.Register;
 
-public class RegisterCommandHandler : AuthBase, IRequestHandler<RegisterCommand, string>
+public class RegisterCommandHandler : AuthBase, IRequestHandler<RegisterCommand, RegisterCommandResponseDto>
 {
-    public RegisterCommandHandler(IIdentityService identityService) : base(identityService)
+    public RegisterCommandHandler(IIdentityService identityService,IMapper mapper) : base(identityService,mapper)
     {
     }
 
-    public async Task<string> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterCommandResponseDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var register = await IdentityService.RegisterAsync(request.Email, request.Password, request.FirstName, request.LastName);
 
-        if (register is null)
-        {
-            throw new ApiException("Failed to register user", (int)HttpStatusCode.BadRequest);
-        }
-
-        return register;
+        return Mapper.Map<RegisterCommandResponseDto>(register);
     }
 }

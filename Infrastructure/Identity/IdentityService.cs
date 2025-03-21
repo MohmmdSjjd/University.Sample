@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -36,7 +37,7 @@ namespace Infrastructure.Identity
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
             {
-                return null;
+                throw new ApiException(result.Errors.First().Description, (int)HttpStatusCode.BadRequest);
             }
 
             return _tokenService.GenerateToken(user);
@@ -47,7 +48,7 @@ namespace Infrastructure.Identity
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
             {
-                return null;
+                throw new ApiException("Email Or Password Is Not Valid!", (int)HttpStatusCode.BadRequest);
             }
 
             return _tokenService.GenerateToken(user);

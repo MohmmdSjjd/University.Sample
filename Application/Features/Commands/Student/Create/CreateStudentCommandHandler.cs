@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Application.Dtos.Student;
+using Application.Dtos.Student.Commands;
 using AutoMapper;
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
@@ -7,13 +8,13 @@ using MediatR;
 
 namespace Application.Features.Commands.Student.Create;
 
-public class CreateStudentCommandHandler : StudentBase,IRequestHandler<CreateStudentCommand, StudentDto>
+public class CreateStudentCommandHandler : StudentBase,IRequestHandler<CreateStudentCommand, CreateStudentCommandResponseDto>
 {
     public CreateStudentCommandHandler(IStudentRepository studentRepository, IMapper mapper) : base(studentRepository, mapper)
     {
     }
 
-    public async Task<StudentDto> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
+    public async Task<CreateStudentCommandResponseDto> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
 
 
@@ -31,7 +32,7 @@ public class CreateStudentCommandHandler : StudentBase,IRequestHandler<CreateStu
             throw new ApiException("Failed to create course", (int)HttpStatusCode.InternalServerError);
         }
 
-        return Mapper.Map<StudentDto>(newStudent);
+        return Mapper.Map<CreateStudentCommandResponseDto>(newStudent);
 
     }
 

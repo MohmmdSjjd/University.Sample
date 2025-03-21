@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Application.Dtos.Course.Commands;
 using AutoMapper;
 using Domain.Contracts.Repositories;
 using Domain.Exceptions;
@@ -6,7 +7,7 @@ using MediatR;
 
 namespace Application.Features.Commands.Course.Create;
 
-public class CreateCourseCommandHandler : CourseBase, IRequestHandler<CreateCourseCommand, Guid>
+public class CreateCourseCommandHandler : CourseBase, IRequestHandler<CreateCourseCommand, CreateCourseCommandResponseDto>
 {
 
 
@@ -14,7 +15,7 @@ public class CreateCourseCommandHandler : CourseBase, IRequestHandler<CreateCour
     {
 
     }
-    public async Task<Guid> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+    public async Task<CreateCourseCommandResponseDto> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
 
         var existingCourseByName = await CourseRepository.GetByNameAsync(request.Name);
@@ -32,6 +33,6 @@ public class CreateCourseCommandHandler : CourseBase, IRequestHandler<CreateCour
             throw new ApiException("Failed to create course", (int)HttpStatusCode.InternalServerError);
         }
 
-        return newCourse.Id;
+        return  Mapper.Map<CreateCourseCommandResponseDto>(newCourse);
     }
 }
